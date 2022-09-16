@@ -13,7 +13,7 @@ const vehicleZodSchema = z.object({
       invalid_type_error: 'Year must be an integer',
     })
     .int()
-    .refine((year) => year >= 1900 && year <= 20022, {
+    .refine((year) => year >= 1900 && year <= 2022, {
       message: 'Year must be between 1900 and 2022',
     }),
   color: z
