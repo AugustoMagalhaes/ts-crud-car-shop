@@ -1,5 +1,7 @@
 import { Router } from 'express';
+import 'express-async-errors';
 import CarController from '../controllers/Car';
+import errorHandler from '../middlewares/error';
 import CarModel from '../models/Car';
 import CarService from '../services/Car';
 
@@ -10,5 +12,6 @@ const carService = new CarService(carModel);
 const carController = new CarController(carService);
 
 carRoute.post('/', (req, res) => carController.create(req, res));
+carRoute.use(errorHandler);
 
 export default carRoute;
