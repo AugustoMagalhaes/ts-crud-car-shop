@@ -14,6 +14,7 @@ const carController = new CarController(carService);
 carRoute.post('/', (req, res) => carController.create(req, res));
 carRoute.get('/', (_req, res) => carController.read(_req, res));
 carRoute.get('/:id', (req, res) => carController.readOne(req, res));
+carRoute.put('/:id', (req, res) => carController.update(req, res));
 
 carRoute.use(errorHandler);
 
