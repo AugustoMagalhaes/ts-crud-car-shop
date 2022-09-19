@@ -38,8 +38,7 @@ export const zodIssues = [
     }
   ]
 
-  export const successRead = [
-  {
+  export const successRead = {
     "_id": "63289ba352e43c5297a0f70e",
     "model": "Golzao",
     "year": 2000,
@@ -48,5 +47,83 @@ export const zodIssues = [
     "doorsQty": 2,
     "seatsQty": 5,
     "__v": 0
-  }
+}
+
+  export const successDelete = {
+    "_id": "63289ba352e43c5297a0f70e",
+    "model": "Golzao",
+    "year": 2000,
+    "color": "white",
+    "buyValue": 3000,
+    "doorsQty": 2,
+    "seatsQty": 5,
+    "__v": 0
+}
+
+export const updatedMockedCar = {
+  "_id": "6328895d52e43c5297a0f709",
+  "model": "Golzao",
+  "year": 2000,
+  "color": "white",
+  "buyValue": 5000,
+  "doorsQty": 2,
+  "seatsQty": 5,
+  "__v": 0
+}
+
+export const allIssues = [
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "model"
+      ],
+      "message": "Model is required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "received": "undefined",
+      "path": [
+        "year"
+      ],
+      "message": "Year is required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "string",
+      "received": "undefined",
+      "path": [
+        "color"
+      ],
+      "message": "Color is required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "received": "undefined",
+      "path": [
+        "buyValue"
+      ],
+      "message": "BuyValue is required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "received": "undefined",
+      "path": [
+        "doorsQty"
+      ],
+      "message": "DoorsQty is required"
+    },
+    {
+      "code": "invalid_type",
+      "expected": "number",
+      "received": "undefined",
+      "path": [
+        "seatsQty"
+      ],
+      "message": "SeatsQty is required"
+    },
 ]
