@@ -2,12 +2,15 @@ import chai from 'chai';
 import { Model } from 'mongoose';
 import * as sinon from 'sinon';
 import { ZodError } from 'zod';
+import { ICar } from '../../../interfaces/ICar';
+import CarModel from '../../../models/Car';
+import MongoModel from '../../../models/MongoModel';
 import { carMockBody, createdMockedCar, successDelete, successRead, updatedMockedCar, wrongCarMockBody, zodIssues } from '../../mocks/carMock';
 
 const { expect } = chai;
 
 describe('model create', () => {
-  /* const carModel = new CarModel() as MongoModel<ICar>; */
+  const carModel = new CarModel() as MongoModel<ICar>;
 
   before(async () => {
     sinon
@@ -39,7 +42,7 @@ describe('model create', () => {
 });
 
 describe('model read', () => {
-  /* const carModel = new CarModel() as MongoModel<ICar>; */
+  const carModel = new CarModel() as MongoModel<ICar>;
 
   before(async () => {
     sinon
@@ -60,7 +63,7 @@ describe('model read', () => {
 });
 
 describe('model readOne', () => {
-  /* const carModel = new CarModel() as MongoModel<ICar>; */
+  const carModel = new CarModel() as MongoModel<ICar>;
 
   before(async () => {
     sinon
@@ -90,7 +93,7 @@ describe('model readOne', () => {
 });
 
 describe('model delete', () => {
-  /* const carModel = new CarModel() as MongoModel<ICar>; */
+  const carModel = new CarModel() as MongoModel<ICar>;
 
   before(async () => {
     sinon
@@ -110,7 +113,7 @@ describe('model delete', () => {
 });
 
 describe('model update', () => {
-  /* const carModel = new CarModel() as MongoModel<ICar>; */
+  const carModel = new CarModel() as MongoModel<ICar>;
 
   before(async () => {
     sinon
