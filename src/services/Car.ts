@@ -1,3 +1,4 @@
+import { isValidObjectId } from 'mongoose';
 import { ErrorTypes } from '../errors/catalog';
 import { carZodSchema, ICar } from '../interfaces/ICar';
 import { IModel } from '../interfaces/IModel';
@@ -21,6 +22,8 @@ class CarService implements IService<ICar> {
   }
 
   public async delete(_id: string): Promise<ICar> {
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+    
     const car = await this._car.delete(_id);
 
     if (!car) throw new Error(ErrorTypes.EntityNotFound);
@@ -33,6 +36,8 @@ class CarService implements IService<ICar> {
   }
 
   public async readOne(_id: string): Promise<ICar> {
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+    
     const car = await this._car.readOne(_id);
 
     if (!car) throw new Error(ErrorTypes.EntityNotFound);
@@ -41,6 +46,8 @@ class CarService implements IService<ICar> {
   }
 
   public async update(_id: string, obj: unknown): Promise<ICar> {
+    if (!isValidObjectId(_id)) throw new Error(ErrorTypes.InvalidMongoId);
+    
     const parsed = carZodSchema.safeParse(obj);
     if (!parsed.success) {
       throw parsed.error;
