@@ -6,7 +6,7 @@ import CarController from '../../../controllers/Car';
 import CarModel from '../../../models/Car';
 import CarService from '../../../services/Car';
 import {
-  allIssues, createdMockedCar,
+  createdMockedCar,
   createdMockedCarBody,
   successDelete,
   successRead,
@@ -24,15 +24,9 @@ describe('controller create', () => {
   const res = {} as Response;
 
   before(async () => {
-    sinon
-      .stub(carService, 'create')
-      .onCall(0)
-      .resolves(createdMockedCar)
-/*       .onCall(1)
-      .throws(new ZodError(zodIssues as any)); */
+    sinon.stub(carService, 'create').onCall(0).resolves(createdMockedCar);
     res.status = sinon.stub().returns(res);
     res.json = sinon.stub().returns(res);
-
   });
 
   after(() => {
@@ -57,133 +51,108 @@ describe('controller create', () => {
   });
 });
 
-describe('service read', () => {
+describe('controller read', () => {
   const carModel = new CarModel();
   const carService = new CarService(carModel);
+  const carController = new CarController(carService);
+
+  const req = {} as Request;
+  const res = {} as Response;
 
   before(async () => {
-    sinon.stub(carModel, 'read').onCall(0).resolves([successRead]);
+    sinon.stub(carService, 'read').onCall(0).resolves([successRead]);
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns(res);
   });
 
   after(() => {
     sinon.restore();
   });
 
-  it('retorna lista de carros', async () => {
-    const allCars = await carService.read();
-
-    expect(allCars).to.deep.equal([successRead]);
-    expect(allCars).to.have.lengthOf(1);
+  it('lê carro com sucesso', async () => {
+    await carController.read(req, res);
+    expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+    expect((res.json as sinon.SinonStub).calledWith([successRead])).to.be.true;
   });
 });
 
-describe('service readOne', () => {
+describe('controller readOne', () => {
   const carModel = new CarModel();
   const carService = new CarService(carModel);
+  const carController = new CarController(carService);
+
+  const req = {} as Request;
+  const res = {} as Response;
+
+  req.params = { id: successRead._id };
 
   before(async () => {
-    sinon
-      .stub(carModel, 'readOne')
-      .onCall(0)
-      .resolves(successRead)
-      .onCall(1)
-      .resolves(null);
+    sinon.stub(carService, 'readOne').onCall(0).resolves(successRead);
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns(res);
   });
 
   after(() => {
     sinon.restore();
   });
 
-  it('retorna carro especifico', async () => {
-    const oneCar = await carService.readOne('63289ba352e43c5297a0f70e');
-
-    expect(oneCar).to.deep.equal(successRead);
-  });
-
-  it('retorna erro esperado', async () => {
-    try {
-      await carService.readOne('123456789012345678901234');
-    } catch (err: any) {
-      expect(err).to.be.instanceOf(Error);
-      expect(err).to.have.property('message', 'EntityNotFound');
-    }
+  it('lê carro específico com sucesso', async () => {
+    await carController.readOne(req, res);
+    expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+    expect((res.json as sinon.SinonStub).calledWith(successRead)).to.be.true;
   });
 });
 
-describe('service delete', () => {
+describe('controller update', () => {
   const carModel = new CarModel();
   const carService = new CarService(carModel);
+  const carController = new CarController(carService);
+
+  const req = {} as Request;
+  const res = {} as Response;
+
+  req.params = { id: updatedMockedCar._id };
 
   before(async () => {
-    sinon
-      .stub(carModel, 'delete')
-      .onCall(0)
-      .resolves(successDelete)
-      .onCall(1)
-      .resolves(null);
+    sinon.stub(carService, 'update').onCall(0).resolves(updatedMockedCar);
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns(res);
   });
 
   after(() => {
     sinon.restore();
   });
 
-  it('retorna carro deletado', async () => {
-    const deletedCar = await carService.delete('63289ba352e43c5297a0f70e');
-
-    expect(deletedCar).to.deep.equal(successRead);
-  });
-
-  it('retorna erro esperado quando não existe id a ser deletado', async () => {
-    try {
-      await carService.delete('12312313123213121111313131313');
-    } catch (err: any) {
-      expect(err).to.be.instanceOf(Error);
-      expect(err.message).to.be.equal('EntityNotFound');
-    }
+  it('atualiza carro com sucesso', async () => {
+    await carController.update(req, res);
+    expect((res.status as sinon.SinonStub).calledWith(200)).to.be.true;
+    expect((res.json as sinon.SinonStub).calledWith(updatedMockedCar)).to.be.true;
   });
 });
 
-describe('service update', () => {
+describe('controller delete', () => {
   const carModel = new CarModel();
   const carService = new CarService(carModel);
+  const carController = new CarController(carService);
+
+  const req = {} as Request;
+  const res = {} as Response;
+
+  req.params = { id: updatedMockedCar._id };
 
   before(async () => {
-    sinon
-      .stub(carModel, 'update')
-      .onCall(0)
-      .resolves(updatedMockedCar)
-      .onCall(1)
-      .resolves(null)
-      .onCall(2)
-      .throws(new ZodError(allIssues as any));
+    sinon.stub(carService, 'delete').onCall(0).resolves(successDelete);
+    res.status = sinon.stub().returns(res);
+    res.send = sinon.stub().returns(res);
   });
 
   after(() => {
     sinon.restore();
   });
 
-  it('retorna carro atualizado', async () => {
-    const updatedCar = await carService.update('63289ba352e43c5297a0f70e', updatedMockedCar);
-
-    expect(updatedCar).to.deep.equal(updatedMockedCar);
-  });
-
-  it('retorna o erro esperado ao tentar atualizar carro com id errado', async () => {
-    try {
-      await carService.update('123456789012345678901234', updatedMockedCar);
-    } catch (err: any) {
-      expect(err).to.be.instanceOf(Error);
-      expect(err.message).to.be.equal('EntityNotFound');
-    }
-  });
-
-  it('retorna o erro esperado ao tentar atualizar carro com objeto vazio', async () => {
-    try {
-      await carService.update('123456789012345678901234', {});
-    } catch (err: any) {
-      expect(err).to.be.instanceOf(ZodError);
-      expect(err.issues).to.be.an('array');
-      expect(err.issues).to.be.deep.equal(allIssues);
-    }
+  it('deleta carro com sucesso', async () => {
+    await carController.delete(req, res);
+    expect((res.status as sinon.SinonStub).calledWith(204)).to.be.true;
+    expect((res.send as sinon.SinonStub).calledWith()).to.be.true;
   });
 });
