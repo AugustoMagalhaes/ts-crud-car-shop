@@ -18,6 +18,16 @@ export const createdMockedCar = {
   "__v": 0
 }
 
+export const createdMockedCarBody = {
+  "model": "Golzao",
+  "year": 2000,
+  "color": "white",
+  "buyValue": 3000,
+  "doorsQty": 2,
+  "seatsQty": 5,
+  "__v": 0
+}
+
 export const wrongCarMockBody = {
   "year": 2000,
   "color": "white",
