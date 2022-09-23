@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import 'express-async-errors';
 import CarController from '../controllers/Car';
 import errorHandler from '../middlewares/error';
 import CarModel from '../models/Car';
