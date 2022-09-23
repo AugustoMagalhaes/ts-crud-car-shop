@@ -1,31 +1,38 @@
 import chai from 'chai';
+import { Request, Response } from 'express';
 import * as sinon from 'sinon';
 import { ZodError } from 'zod';
+import CarController from '../../../controllers/Car';
 import CarModel from '../../../models/Car';
 import CarService from '../../../services/Car';
 import {
-  allIssues,
-  carMockBody,
-  createdMockedCar,
+  allIssues, createdMockedCar,
+  createdMockedCarBody,
   successDelete,
   successRead,
   updatedMockedCar,
-  wrongCarMockBody,
-  zodIssues
+  wrongCarMockBody
 } from '../../mocks/carMock';
 const { expect } = chai;
 
-describe('service create', () => {
+describe('controller create', () => {
   const carModel = new CarModel();
   const carService = new CarService(carModel);
+  const carController = new CarController(carService);
+
+  const req = {} as Request;
+  const res = {} as Response;
 
   before(async () => {
     sinon
-      .stub(carModel, 'create')
+      .stub(carService, 'create')
       .onCall(0)
       .resolves(createdMockedCar)
-      .onCall(1)
-      .throws(new ZodError(zodIssues as any));
+/*       .onCall(1)
+      .throws(new ZodError(zodIssues as any)); */
+    res.status = sinon.stub().returns(res);
+    res.json = sinon.stub().returns(res);
+
   });
 
   after(() => {
@@ -33,9 +40,11 @@ describe('service create', () => {
   });
 
   it('cria carro com sucesso', async () => {
-    const createdCar = await carService.create(carMockBody);
+    req.body = createdMockedCarBody;
+    await carController.create(req, res);
 
-    expect(createdCar).to.deep.equal(createdMockedCar);
+    expect((res.status as sinon.SinonStub).calledWith(201)).to.be.true;
+    expect((res.json as sinon.SinonStub).calledWith(createdMockedCar)).to.be.true;
   });
 
   it('retorna erro quando falta chave do body', async () => {
@@ -126,7 +135,7 @@ describe('service delete', () => {
 
   it('retorna erro esperado quando não existe id a ser deletado', async () => {
     try {
-      await carService.delete('6328b6b0310efb1ae58bde70');
+      await carService.delete('12312313123213121111313131313');
     } catch (err: any) {
       expect(err).to.be.instanceOf(Error);
       expect(err.message).to.be.equal('EntityNotFound');
