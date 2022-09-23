@@ -32,7 +32,7 @@ class CarController {
 
   public async update(req: Request, res: Response<ICar>) {
     const { id } = req.params;
-    console.log('id', id);
+
     const updatedCar = await this._service.update(id, req.body);
     
     return res.status(200).json(updatedCar);
