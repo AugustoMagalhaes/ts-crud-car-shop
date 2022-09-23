@@ -1,4 +1,5 @@
 import chai from 'chai';
+import { Model } from 'mongoose';
 import * as sinon from 'sinon';
 import { ZodError } from 'zod';
 import CarModel from '../../../models/Car';
@@ -21,7 +22,7 @@ describe('service create', () => {
 
   before(async () => {
     sinon
-      .stub(carModel, 'create')
+      .stub(Model, 'create')
       .onCall(0)
       .resolves(createdMockedCar)
       .onCall(1)
@@ -53,7 +54,7 @@ describe('service read', () => {
   const carService = new CarService(carModel);
 
   before(async () => {
-    sinon.stub(carModel, 'read').onCall(0).resolves([successRead]);
+    sinon.stub(Model, 'find').onCall(0).resolves([successRead]);
   });
 
   after(() => {
@@ -74,11 +75,13 @@ describe('service readOne', () => {
 
   before(async () => {
     sinon
-      .stub(carModel, 'readOne')
+      .stub(Model, 'findOne')
       .onCall(0)
       .resolves(successRead)
       .onCall(1)
-      .resolves(null);
+      .resolves(null)
+      .onCall(2)
+      .resolves(null)
   });
 
   after(() => {
@@ -91,12 +94,21 @@ describe('service readOne', () => {
     expect(oneCar).to.deep.equal(successRead);
   });
 
-  it('retorna erro esperado', async () => {
+  it('retorna erro esperado quando id não existe', async () => {
     try {
       await carService.readOne('123456789012345678901234');
     } catch (err: any) {
       expect(err).to.be.instanceOf(Error);
       expect(err).to.have.property('message', 'EntityNotFound');
+    }
+  });
+
+    it('retorna erro esperado quando id é inválido de acordo com o mongo', async () => {
+    try {
+      await carService.readOne('123');
+    } catch (err: any) {
+      expect(err).to.be.instanceOf(Error);
+      expect(err).to.have.property('message', 'InvalidMongoId');
     }
   });
 });
@@ -107,10 +119,12 @@ describe('service delete', () => {
 
   before(async () => {
     sinon
-      .stub(carModel, 'delete')
+      .stub(Model, 'findOneAndDelete')
       .onCall(0)
       .resolves(successDelete)
       .onCall(1)
+      .resolves(null)
+      .onCall(2)
       .resolves(null);
   });
 
@@ -119,17 +133,28 @@ describe('service delete', () => {
   });
 
   it('retorna carro deletado', async () => {
-    const deletedCar = await carService.delete('63289ba352e43c5297a0f70e');
+    const deletedCar = await carService.delete('6328b6b0310efb1ae58bde72');
 
     expect(deletedCar).to.deep.equal(successRead);
   });
 
   it('retorna erro esperado quando não existe id a ser deletado', async () => {
     try {
-      await carService.delete('6328b6b0310efb1ae58bde70');
+      const deletedCar = await carService.delete('123456789012345678901234');
+      return deletedCar;
     } catch (err: any) {
       expect(err).to.be.instanceOf(Error);
       expect(err.message).to.be.equal('EntityNotFound');
+    }
+  });
+
+    it('retorna erro esperado quando id é inválido de acordo com o mongo', async () => {
+    try {
+      const deletedCar = await carService.delete('idNadaAVer');
+      return deletedCar;
+    } catch (err: any) {
+      expect(err).to.be.instanceOf(Error);
+      expect(err.message).to.be.equal('InvalidMongoId');
     }
   });
 });
@@ -140,13 +165,15 @@ describe('service update', () => {
 
   before(async () => {
     sinon
-      .stub(carModel, 'update')
+      .stub(Model, 'findOneAndUpdate')
       .onCall(0)
       .resolves(updatedMockedCar)
       .onCall(1)
       .resolves(null)
       .onCall(2)
-      .throws(new ZodError(allIssues as any));
+      .throws(new ZodError(allIssues as any))
+      .onCall(3)
+      .resolves(null);
   });
 
   after(() => {
@@ -175,6 +202,15 @@ describe('service update', () => {
       expect(err).to.be.instanceOf(ZodError);
       expect(err.issues).to.be.an('array');
       expect(err.issues).to.be.deep.equal(allIssues);
+    }
+  });
+
+    it('retorna o erro esperado ao tentar atualizar carro com id mongo inválido', async () => {
+    try {
+      await carService.update('123', updatedMockedCar);
+    } catch (err: any) {
+      expect(err).to.be.instanceOf(Error);
+      expect(err.message).to.be.equal('InvalidMongoId');
     }
   });
 });

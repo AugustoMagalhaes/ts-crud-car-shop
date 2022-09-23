@@ -53,6 +53,7 @@ class CarService implements IService<ICar> {
       throw parsed.error;
     }
     const car = await this._car.update(_id, parsed.data);
+    
     if (!car) throw new Error(ErrorTypes.EntityNotFound);
     return car;
   }
